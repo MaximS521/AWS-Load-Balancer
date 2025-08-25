@@ -50,7 +50,8 @@ AWS-Load-Balancer/
 ### 1. Upload files to S3
 - Create a bucket:  
 <YOUR-BUCKET-NAME> ``` - Upload files from `/s3`.
-2. IAM bucket policy
+
+### 2. IAM bucket policy
 Use iam/bucket-permissions.json, replacing with your bucket ARN:
 
 "Resource": [
@@ -58,7 +59,7 @@ Use iam/bucket-permissions.json, replacing with your bucket ARN:
   "arn:aws:s3:::<YOUR-BUCKET-NAME>/*"
 ]
 
-3. Launch EC2 Instances
+### 3. Launch EC2 Instances
 Launch two Amazon Linux 2 instances.
 
 Attach the user data scripts during launch:
@@ -67,7 +68,7 @@ user-data-red.sh → Red target group
 
 user-data-blue.sh → Blue target group
 
-4. Configure Target Groups
+### 4. Configure Target Groups
 Create Red and Blue target groups in your ALB.
 
 Register the respective EC2 instances.
@@ -78,7 +79,7 @@ Red → /red/index.html
 
 Blue → /blue/index.html
 
-5. Create Application Load Balancer
+### 5. Create Application Load Balancer
 Listener: HTTP :80
 
 Add routing rules:
@@ -89,7 +90,7 @@ Host-based → red.<YOUR-DOMAIN> → Red TG, blue.<YOUR-DOMAIN> → Blue TG
 
 Default rule: return a fixed 404 (optional)
 
-6. Route 53 DNS Setup
+### 6. Route 53 DNS Setup
 Create hosted zone:
 <YOUR-DOMAIN>
 Add records:
