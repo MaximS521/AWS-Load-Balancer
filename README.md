@@ -21,9 +21,7 @@ It showcases **advanced request routing** with an Application Load Balancer (ALB
 
 ## 📂 Repository Structure
 
-AWS-Load-Balancer/
-├── user-data/
-│ ├── user-data-red.sh
+AWS-Load-Balancer/├── user-data/│ ├── user-data-red.sh
 │ └── user-data-blue.sh
 ├── iam/
 │ └── bucket-permissions.json
