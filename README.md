@@ -92,7 +92,7 @@ Host-based → red.<YOUR-DOMAIN> → Red TG, blue.<YOUR-DOMAIN> → Blue TG
 
 ### 6. Route 53 DNS Setup
 - Create hosted zone:
-"<YOUR-DOMAIN>"
+OUR-DOMAIN
 - Add records:
 red.<YOUR-DOMAIN> → A Alias → ALB
 
