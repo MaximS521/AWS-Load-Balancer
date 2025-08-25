@@ -99,6 +99,6 @@ red.<YOUR-DOMAIN> → A Alias → ALB
 blue.<YOUR-DOMAIN> → A Alias → ALB
 
 🔀 Routing Modes
-Path-based routing
 
+Path-based routing
 Host-based routing
