@@ -1,105 +1,107 @@
-# AWS-Load-Balancer
-# AWS ALB Advanced Request Routing (Red/Blue)
+# AWS Load Balancer – Red/Blue Deployment
 
-Hands-on project deploying a **load-balanced, highly available** web app on AWS with **Application Load Balancer (ALB)** and **Route 53**. The ALB routes requests to “Red” and “Blue” versions using **path-based** and **host-based** rules.
-
-> Region: `us-east-1`  
-> Project alias: `maxproject2`
-
-## 🧩 Architecture
-
-![architecture](assets/architecture-diagram.png)
-
-**Services**: S3, EC2 (Amazon Linux), Security Groups, Target Groups, Application Load Balancer, Route 53.
-
-**Routing modes**:
-- Path-based: `/red*` → Red TG, `/blue*` → Blue TG
-- Host-based: `red.smuddin.com` → Red TG, `blue.smuddin.com` → Blue TG
-- Default rule: return 404 (optional)
+This project demonstrates how to design and deploy a **scalable, load-balanced web application** using AWS services such as **EC2, S3, ALB, IAM, and Route 53**.  
+It showcases **advanced request routing** with an Application Load Balancer (ALB), serving different versions of a site (`Red` and `Blue`) based on **paths** or **hostnames**.
 
 ---
 
-## 📂 Contents
+## 🏗️ Architecture Overview
 
-- `user-data/` – EC2 user data scripts that install Apache and pull site files from S3
-- `s3/` – sample site content (red & blue)
-- `iam/bucket-permissions.json` – bucket policy allowing `GetObject`
-- `assets/` – screenshots and diagram for README/Medium
-- `docs/` – optional step-by-step notes
+- **Amazon S3** – stores static assets (HTML, CSS, images).
+- **Amazon EC2** – hosts two instances (Red and Blue), each bootstrapped with user-data scripts.
+- **Application Load Balancer (ALB)** – handles traffic distribution with:
+  - Path-based routing: `/red*`, `/blue*`
+  - Host-based routing: `red.<YOUR-DOMAIN>`, `blue.<YOUR-DOMAIN>`
+- **IAM** – bucket policy to allow EC2 instances to fetch S3 objects.
+- **Route 53** – DNS setup to map domain/subdomains to the ALB.
 
----
-
-## 🚀 Quick Start (Console workflow)
-
-1. **S3**
-   - Create a bucket, e.g. `arr-bucket-maxproject2-1234`
-   - Upload files from `/s3` (red & blue assets)
-   - Apply a bucket policy like `iam/bucket-permissions.json` (replace `YOUR-BUCKET-ARN`)
-
-2. **EC2**
-   - Launch 2 Amazon Linux instances (t3.micro OK)
-   - Use `user-data/user-data-red.sh` for Red, `user-data/user-data-blue.sh` for Blue
-   - Security Group: allow inbound **HTTP (80)** from `0.0.0.0/0`
-
-3. **Target Groups**
-   - Create TG **Red** (port 80), register Red instance
-   - Create TG **Blue** (port 80), register Blue instance
-   - Health check path examples:
-     - Red: `/red/index.html`
-     - Blue: `/blue/index.html`
-
-4. **ALB**
-   - Internet-facing Application Load Balancer across 2 subnets
-   - Listener **HTTP:80**
-   - **Add rules**:
-     - Path-based phase:
-       - `/red*` → forward to **Red**
-       - `/blue*` → forward to **Blue**
-     - Host-based phase:
-       - Host header `red.smuddin.com` → **Red**
-       - Host header `blue.smuddin.com` → **Blue**
-     - Default rule: return **404** (optional)
-
-5. **Route 53**
-   - Public hosted zone: `smuddin.com`
-   - Records:
-     - `red.smuddin.com` → **A Alias** → ALB
-     - `blue.smuddin.com` → **A Alias** → ALB
-
-6. **Test**
-   - `http://red.smuddin.com`
-   - `http://blue.smuddin.com`
-
-> If DNS hasn’t propagated: flush local DNS or temporarily add hosts entries pointing subdomains to ALB IPs.
+![Overall Architecture](assets/architecture-diagram.png)
 
 ---
 
-## 🔧 User data scripts
+## 📂 Repository Structure
 
-### `user-data/user-data-red.sh`
-```bash
-#!/bin/bash
-yum update -y
-yum install -y httpd awscli
-systemctl start httpd
-systemctl enable httpd
+AWS-Load-Balancer/
+│
+├── user-data/
+│ ├── user-data-red.sh
+│ ├── user-data-blue.sh
+│
+├── iam/
+│ └── bucket-permissions.json
+│
+├── s3/
+│ ├── red-index.html
+│ ├── blue-index.html
+│ ├── hw-red.css
+│ ├── hw-blue.css
+│
+├── assets/
+│ ├── architecture-diagram.png
+│ ├── diagram-path-based.png
+│ ├── diagram-host-based.png
+│ ├── alb-listener-rules.png
+│ ├── route53-records.png
+│ └── s3-bucket-contents.png
+│
+├── .gitignore
+├── LICENSE
+└── README.md
 
-# directories
-mkdir -p /var/www/html/red
-cd /var/www/html/red
 
-# copy from S3 (replace with your bucket)
-aws s3 cp s3://arr-bucket-maxproject2-1234/hw-red.css .
-aws s3 cp s3://arr-bucket-maxproject2-1234/hw-red-py.css . || true
-aws s3 cp s3://arr-bucket-maxproject2-1234/python.png . || true
-aws s3 cp s3://arr-bucket-maxproject2-1234/apache.svg .
-aws s3 cp s3://arr-bucket-maxproject2-1234/red-index.html ./index.html
+## ⚙️ Setup Instructions
 
-# replace default root page with red root if desired
-cd /var/www/html
-aws s3 cp s3://arr-bucket-maxproject2-1234/hw-red.css .
-aws s3 cp s3://arr-bucket-maxproject2-1234/python.png . || true
-aws s3 cp s3://arr-bucket-maxproject2-1234/apache.svg .
-aws s3 cp s3://arr-bucket-maxproject2-1234/red-root-index.html ./index.html || true
+### 1. Upload files to S3
+- Create a bucket:  
+<YOUR-BUCKET-NAME> ``` - Upload files from `/s3`.
+2. IAM bucket policy
+Use iam/bucket-permissions.json, replacing with your bucket ARN:
 
-systemctl restart httpd
+"Resource": [
+  "arn:aws:s3:::<YOUR-BUCKET-NAME>",
+  "arn:aws:s3:::<YOUR-BUCKET-NAME>/*"
+]
+
+3. Launch EC2 Instances
+Launch two Amazon Linux 2 instances.
+
+Attach the user data scripts during launch:
+
+user-data-red.sh → Red target group
+
+user-data-blue.sh → Blue target group
+
+4. Configure Target Groups
+Create Red and Blue target groups in your ALB.
+
+Register the respective EC2 instances.
+
+Health check paths:
+
+Red → /red/index.html
+
+Blue → /blue/index.html
+
+5. Create Application Load Balancer
+Listener: HTTP :80
+
+Add routing rules:
+
+Path-based → /red* → Red TG, /blue* → Blue TG
+
+Host-based → red.<YOUR-DOMAIN> → Red TG, blue.<YOUR-DOMAIN> → Blue TG
+
+Default rule: return a fixed 404 (optional)
+
+6. Route 53 DNS Setup
+Create hosted zone:
+<YOUR-DOMAIN>
+Add records:
+red.<YOUR-DOMAIN> → A Alias → ALB
+
+blue.<YOUR-DOMAIN> → A Alias → ALB
+
+🔀 Routing Modes
+Path-based routing
+
+Host-based routing
