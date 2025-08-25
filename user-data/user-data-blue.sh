@@ -1,3 +1,6 @@
+Replace the bucket name with your S3 bucket.
+If you didn’t use the “root-index” files, health check to /red/index.html and /blue/index.html.
+
 #!/bin/bash
 yum update -y
 yum install -y httpd awscli
