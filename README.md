@@ -21,27 +21,31 @@ It showcases **advanced request routing** with an Application Load Balancer (ALB
 
 ## 📂 Repository Structure
 
+```text
 AWS-Load-Balancer/
 ├── user-data/
-│ ├── user-data-red.sh
-│ └── user-data-blue.sh
+│   ├── user-data-red.sh
+│   └── user-data-blue.sh
 ├── iam/
-│ └── bucket-permissions.json
+│   └── bucket-permissions.json
 ├── s3/
-│ ├── red-index.html
-│ ├── blue-index.html
-│ ├── hw-red.css
-│ └── hw-blue.css
+│   ├── red-index.html
+│   ├── blue-index.html
+│   ├── hw-red.css
+│   └── hw-blue.css
 ├── assets/
-│ ├── architecture-diagram.png
-│ ├── diagram-path-based.png
-│ ├── diagram-host-based.png
-│ ├── alb-listener-rules.png
-│ ├── route53-records.png
-│ └── s3-bucket-contents.png
+│   ├── architecture-diagram.png
+│   ├── diagram-path-based.png
+│   ├── diagram-host-based.png
+│   ├── alb-listener-rules.png
+│   ├── route53-records.png
+│   └── s3-bucket-contents.png
 ├── .gitignore
 ├── LICENSE
 └── README.md
+
+'''text
+
 
 
 ## ⚙️ Setup Instructions
