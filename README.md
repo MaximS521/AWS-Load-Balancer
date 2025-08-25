@@ -43,10 +43,7 @@ AWS-Load-Balancer/
 ├── .gitignore
 ├── LICENSE
 └── README.md
-
-'''text
-
-
+```
 
 ## ⚙️ Setup Instructions
 
