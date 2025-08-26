@@ -1,17 +1,17 @@
-# AWS Load Balancer – Red/Blue Deployment
+# AWS Load Balancer – White/Purple Deployment
 
 This project demonstrates how to design and deploy a **scalable, load-balanced web application** using AWS services such as **EC2, S3, ALB, IAM, and Route 53**.  
-It showcases **advanced request routing** with an Application Load Balancer (ALB), serving different versions of a site (`Red` and `Blue`) based on **paths** or **hostnames**.
+It showcases **advanced request routing** with an Application Load Balancer (ALB), serving different versions of a site (`White` and `Purple`) based on **paths** or **hostnames**.
 
 ---
 
 ## 🏗️ Architecture Overview
 
 - **Amazon S3** – stores static assets (HTML, CSS, images).
-- **Amazon EC2** – hosts two instances (Red and Blue), each bootstrapped with user-data scripts.
+- **Amazon EC2** – hosts two instances (white and purple), each bootstrapped with user-data scripts.
 - **Application Load Balancer (ALB)** – handles traffic distribution with:
-  - Path-based routing: `/red*`, `/blue*`
-  - Host-based routing: `red.<YOUR-DOMAIN>`, `blue.<YOUR-DOMAIN>`
+  - Path-based routing: `/white*`, `/purple*`
+  - Host-based routing: `white.<YOUR-DOMAIN>`, `purple.<YOUR-DOMAIN>`
 - **IAM** – bucket policy to allow EC2 instances to fetch S3 objects.
 - **Route 53** – DNS setup to map domain/subdomains to the ALB.
 
@@ -64,29 +64,29 @@ AWS-Load-Balancer/
 
 - Attach the user data scripts during launch:
 
-user-data-red.sh → Red target group
+user-data-white.sh → White target group
 
-user-data-blue.sh → Blue target group
+user-data-purple.sh → Purple target group
 
 ### 4. Configure Target Groups
-- Create Red and Blue target groups in your ALB.
+- Create White and Purple target groups in your ALB.
 
 - Register the respective EC2 instances.
 
 - Health check paths:
 
-Red → /red/index.html
+White → /White/index.html
 
-Blue → /blue/index.html
+Purple → /Purple/index.html
 
 ### 5. Create Application Load Balancer
 - Listener: HTTP :80
 
 - Add routing rules:
 
-Path-based → /red* → Red TG, /blue* → Blue TG
+Path-based → /white* → White TG, /purple* → Purple TG
 
-Host-based → red.<YOUR-DOMAIN> → Red TG, blue.<YOUR-DOMAIN> → Blue TG
+Host-based → white.<YOUR-DOMAIN> → White TG, purple.<YOUR-DOMAIN> → Purple TG
 
 - Default rule: return a fixed 404 (optional)
 
@@ -97,9 +97,9 @@ Host-based → red.<YOUR-DOMAIN> → Red TG, blue.<YOUR-DOMAIN> → Blue TG
 ```
 - Add records:
 ```text
-red. <YOUR-DOMAIN>  → A Alias → ALB
+white. <YOUR-DOMAIN>  → A Alias → ALB
 
-blue. <YOUR-DOMAIN> → A Alias → ALB
+purple. <YOUR-DOMAIN> → A Alias → ALB
 ```
 🔀 Routing Modes
 
